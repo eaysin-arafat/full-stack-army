@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const db = require("../db/db");
 
-router.get("/t/:ticketId", () => {});
+// router.get("/t/:ticketId", () => {});
 
 router
   .route("/t/:ticketId")
@@ -34,9 +34,16 @@ router
   })
   .patch((req, res) => {
     const username = req.params.username;
+
+    const updatedUser = db.updateByUserName(username, req.body);
+    res.status(200).json({ message: "updated successfully", updatedUser });
   })
   .delete((req, res) => {
     const username = req.params.username;
+
+    const updatedUser = db.deleteByUsername(username);
+
+    res.status(203).json({ message: "deleted successfully", updatedUser });
   });
 
 router.post("/sell", (req, res) => {
@@ -68,4 +75,4 @@ router.get("", (req, res) => {
   res.status(200).json(tickets);
 });
 
-router.module.exports = router;
+module.exports = router;

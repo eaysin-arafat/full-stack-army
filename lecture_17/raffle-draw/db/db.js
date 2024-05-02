@@ -47,12 +47,7 @@ class MyDb {
    * @returns {Ticket}
    */
   findById(ticketId) {
-    return this.tickets.find(
-      /**
-       * @param {Ticket} ticket
-       */
-      (ticket) => ticket.id === ticketId
-    );
+    return this.tickets.find((ticket) => ticket.id === ticketId);
   }
 
   /**
@@ -61,11 +56,7 @@ class MyDb {
    * @returns {Array<Ticket>}
    */
   findByUsername(username) {
-    return (tickets = this.tickets.filter(
-      /**@param {Ticket} ticket */
-
-      (ticket) => (ticket.username = username)
-    ));
+    return this.tickets.filter((ticket) => ticket.username === username);
   }
 
   /**
@@ -76,6 +67,7 @@ class MyDb {
    */
   updateById(ticketId, ticketBody) {
     const ticket = this.findById(ticketId);
+
     ticket.username = ticketBody.username ?? ticket.username;
     ticket.price = ticketBody.price ?? ticket.price;
     ticket.updatedAt = new Date();
@@ -83,15 +75,24 @@ class MyDb {
     return ticket;
   }
 
+  updateByUserName(userName, userBody) {
+    const users = this.findByUsername(userName);
+
+    users.map((user) => {
+      user.username = userBody.username ?? user.username;
+      user.price = userBody.price ?? user.price;
+      user.updatedAt = new Date();
+    });
+
+    return users;
+  }
+
   /**
    *
    * @param {string} ticketId
    */
   deleteById(ticketId) {
-    const index = this.tickets.findIndex(
-      /**@param {Ticket} ticket */
-      (ticket) => ticket.id === ticketId
-    );
+    const index = this.tickets.findIndex((ticket) => ticket.id === ticketId);
 
     if (index !== -1) {
       this.tickets.splice(index, 1);
@@ -99,6 +100,27 @@ class MyDb {
     } else {
       return false;
     }
+  }
+
+  /**
+   *
+   * @param {string} ticketId
+   */
+  deleteByUsername(username) {
+    console.log("old", this.tickets);
+
+    const indexesToRemove = [];
+    this.tickets.forEach((ticket, index) => {
+      if (ticket.username === username) {
+        indexesToRemove.push(index);
+      }
+    });
+
+    indexesToRemove.reverse().forEach((index) => {
+      this.tickets.splice(index, 1);
+    });
+
+    return this.tickets;
   }
 
   /**
