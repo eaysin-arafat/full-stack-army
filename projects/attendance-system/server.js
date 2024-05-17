@@ -1,59 +1,27 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
 const connectDB = require("./db");
-const User = require("./models/User");
+const authenticate = require("./middleware/authenticate");
+const routes = require("./routes");
 
 const app = express();
 app.use(express.json());
+app.use(routes);
 
-app.post("/register", async (req, res, next) => {
-  const { name, email, password } = req.body;
+app.get("/private", authenticate, async (req, res) => {
+  console.log("user", req.user);
 
-  if (!name || !email || !password)
-    return res.status(400).json({ message: "Invalid Data" });
-
-  try {
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: "User already exist" });
-
-    user = new User({
-      name,
-      email,
-      password,
-    });
-
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-    user.password = hash;
-
-    await user.save();
-    return res.status(201).json({ message: "User created successfully", user });
-  } catch (e) {
-    next(e);
-  }
+  return res.status(200).json({ message: "private" });
 });
 
-app.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid Credential" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) res.status(400).json({ message: "Invalid Credential" });
-
-    delete user._doc.password;
-
-    return res.status(200).json({ message: "Login Successful", user });
-  } catch (e) {
-    next(e);
-  }
+app.get("/public", (_req, res) => {
+  return res.status(200).json({ message: "public" });
 });
 
 app.use((error, req, res, next) => {
-  console.log(error);
-  res.status(500).json({ message: "Server Error Occured" });
+  const message = error.message ? error.message : "Server Error Occurred";
+
+  const status = error.status ? error.status : 500;
+  res.status(status).json({ message });
 });
 
 connectDB("mongodb://localhost:27017/attendance-db")
