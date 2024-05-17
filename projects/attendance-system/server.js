@@ -28,7 +28,7 @@ connectDB("mongodb://localhost:27017/attendance-db")
   .then(() => {
     console.log("Database Connected");
     app.listen(4000, () => {
-      console.log("I am listining");
+      console.log("I am listening");
     });
   })
   .catch((error) => console.log(error));
