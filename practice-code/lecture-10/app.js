@@ -2,7 +2,7 @@ const isResolved = true;
 
 const promise = new Promise((resolve, reject) => {
   if (isResolved) {
-    resolve("complated");
+    resolve("completed");
   } else {
     reject("data");
   }
