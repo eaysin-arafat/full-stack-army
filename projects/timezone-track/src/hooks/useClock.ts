@@ -42,7 +42,9 @@ const useClock = (timezone?: string, offset?: number) => {
     const d = new Date();
 
     const utcDate = addMinutes(d, d.getTimezoneOffset());
-    const effectiveOffset = offset ?? TIMEZONE_OFFSET[timezone] ?? 0;
+    const effectiveOffset =
+      offset ?? (timezone ? TIMEZONE_OFFSET[timezone] : 0) ?? 0;
+
     const date =
       timezone === "" ? new Date() : addMinutes(utcDate, effectiveOffset);
 
