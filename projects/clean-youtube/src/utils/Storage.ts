@@ -5,7 +5,7 @@ class Storage {
 
   get(key: string) {
     const json = localStorage.getItem(key);
-    return JSON.parse(json);
+    if (json) return JSON.parse(json);
   }
 }
 

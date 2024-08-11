@@ -94,7 +94,7 @@ const usePlaylists = () => {
   useEffect(() => {
     const state = storage.get(STORAGE_KEY);
     if (state) setState({ ...state });
-  }, [state]);
+  }, []);
 
   useEffect(() => {
     if (state !== INIT_STATE) storage.save(STORAGE_KEY, state);
